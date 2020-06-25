@@ -3,27 +3,26 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { getInterfaceObject, buildClass } from './utils'
 
-const interfacePath =
-    `H:\\Projetos\\seidor\\efdcontribservice\\src\\utils\\registryUtils\\block0\\0000\\interface.ts`
+const INTERFACE_PATH =
+    `H:\\Projetos\\seidor\\efdcontribservice\\src\\interfaces\\NFe\\index.ts`
 
-const interfaceName = 'ContribuicoesRetidas'
+const INTERFACE_NAME = 'NFe'
 
-const myBuildersPath =
+const BUILDERS_PATH =
     `H:\\Projetos\\seidor\\efdcontribservice\\src\\tests\\testBuilders`
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const className = `${interfaceName}Builder`
-const objectName = interfaceName.toLowerCase()
-
-
 function main() {
-    const interfaceObject = getInterfaceObject(interfacePath, interfaceName)
+    const className = `${INTERFACE_NAME}Builder`
+    const objectName = INTERFACE_NAME.toLowerCase()
+
+    const interfaceObject = getInterfaceObject(INTERFACE_PATH, INTERFACE_NAME)
 
     const classe = buildClass(interfaceObject, objectName, className)
 
-    fs.writeFileSync(path.join(myBuildersPath, `/${className}.ts`), classe)
+    fs.writeFileSync(path.join(BUILDERS_PATH, `/${className}.ts`), classe)
 }
 
 main()
