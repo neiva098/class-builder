@@ -1,0 +1,29 @@
+{
+  "name": "class",
+  "version": "1.0.0",
+  "description": "class",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch src/**/*.ts --exec ts-node src/index.ts",
+    "start": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "ts-node": "^8.8.1",
+    "typescript": "^3.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.14",
+    "nodemon": "^2.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neiva098/class.git"
+  },
+  "author": "nego ney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/neiva098/class/issues"
+  },
+  "homepage": "https://github.com/neiva098/class#readme"
+}

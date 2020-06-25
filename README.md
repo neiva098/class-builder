@@ -1,1 +1,1 @@
-class-builder
+class
