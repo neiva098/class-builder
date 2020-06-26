@@ -6,7 +6,7 @@ export const getInterfaceObject = (path: string, name: string) => {
 
     const interfaceStr = getInterfaceIntoFile(file, name)
 
-    return interfaceToJson(interfaceStr, 0)
+    return JSON.parse(interfaceToJson(interfaceStr).str)
 }
 
 export const getInterfaceIntoFile = (file: string, name: string) => {
@@ -93,7 +93,7 @@ export const handleNewComplexKey = (value: Entrie, key: Entrie, interfaceStr: st
     }
 }
 
-export const interfaceToJson = (interfaceStr: string, actualIndex: number) => {
+export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0) => {
     let key = {
         indexBegin: actualIndex,
         str: ''
@@ -108,30 +108,33 @@ export const interfaceToJson = (interfaceStr: string, actualIndex: number) => {
 
     for (let i = actualIndex; i < interfaceStr.length - 1; i++) {
         const currentChar = interfaceStr[i]
+        let isToReturn = false
 
         if (currentChar === ':') {
             handleNewValue(value, key, interfaceStr, i)
-        }
-
-        if (currentChar.match(new RegExp(/\n|,/)) && value.str !== '') {
-            const entrie = handleNewPrimitiveKey(value, key, interfaceStr, i)
-
-            entries.push(entrie)
+            continue
         }
 
         if (currentChar === '{' && value.str !== '') {
             const { entrie, newIndex } = handleNewComplexKey(value, key, interfaceStr, i)
 
             i = newIndex
-
             entries.push(entrie)
+
+            continue
         }
 
-        if (currentChar === '}') {
-            const entrie = handleNewPrimitiveKey(value, key, interfaceStr, i)
+        if (currentChar === '}' || currentChar.match(new RegExp(/\n|,/))) {
+            if (value.str !== '') {
+                const entrie = handleNewPrimitiveKey(value, key, interfaceStr, i)
 
-            entries.push(entrie)
+                entries.push(entrie)
 
+                continue
+            } else isToReturn = entries.length > 0
+        }
+
+        if (isToReturn) {
             return {
                 str: JSON.stringify(Object.fromEntries(entries)),
                 index: i,
@@ -139,12 +142,19 @@ export const interfaceToJson = (interfaceStr: string, actualIndex: number) => {
         }
     }
 
-    return Object.fromEntries(entries)
+    return {
+        str: JSON.stringify(Object.fromEntries(entries)),
+        index: interfaceStr.length
+    }
 }
 
 export const getMethods = (objectInterface: any, objectName: string, className: string) => {
     const methods = Object.entries(objectInterface).map((entrie: any) => {
-        entrie[1] = entrie[1].replace(new RegExp(/["]/, 'gm'), '')
+        entrie[1] = entrie[1]
+            .replace(new RegExp(/["]|[\\"]/, 'gm'), '')
+            .replace(new RegExp(/[.:]/, 'gm'), ': ')
+            .replace(new RegExp(/[.{]/, 'gm'), '{ ')
+            .replace(new RegExp(/[.}]/, 'gm'), ' }')
 
         return `    public with${entrie[0][0].toUpperCase()}${entrie[0].slice(1)}(${entrie[0]}: ${[entrie[1]]}): ${className} {
         this._${objectName}.${entrie[0]} = ${entrie[0]}
