@@ -78,7 +78,7 @@ export const handleNewPrimitiveKey = (value: Entrie, key: Entrie, interfaceStr: 
 }
 
 export const handleNewComplexKey = (value: Entrie, key: Entrie, interfaceStr: string, actualIndex: number) => {
-    const { str, index: newIndex } = <any>interfaceToJson(interfaceStr, actualIndex)
+    const { str, index: newIndex } = <any>interfaceToJson(interfaceStr, actualIndex, true)
 
     key.str = str
 
@@ -93,7 +93,7 @@ export const handleNewComplexKey = (value: Entrie, key: Entrie, interfaceStr: st
     }
 }
 
-export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0) => {
+export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0, isComplex: boolean = false) => {
     let key = {
         indexBegin: actualIndex,
         str: ''
@@ -108,7 +108,6 @@ export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0) =
 
     for (let i = actualIndex; i < interfaceStr.length - 1; i++) {
         const currentChar = interfaceStr[i]
-        let isToReturn = false
 
         if (currentChar === ':') {
             handleNewValue(value, key, interfaceStr, i)
@@ -129,15 +128,13 @@ export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0) =
                 const entrie = handleNewPrimitiveKey(value, key, interfaceStr, i)
 
                 entries.push(entrie)
-
-                continue
-            } else isToReturn = entries.length > 0
-        }
-
-        if (isToReturn) {
-            return {
-                str: JSON.stringify(Object.fromEntries(entries)),
-                index: i,
+            } else {
+                if (entries.length > 0 && isComplex) {
+                    return {
+                        str: JSON.stringify(Object.fromEntries(entries)),
+                        index: i,
+                    }
+                }
             }
         }
     }
@@ -182,5 +179,6 @@ ${methods.join('\n\n')}
         return this._${objectName}
     }
 
-}`
+}
+`
 }
