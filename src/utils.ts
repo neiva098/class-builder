@@ -78,7 +78,7 @@ export const handleNewPrimitiveKey = (value: Entrie, key: Entrie, interfaceStr: 
 }
 
 export const handleNewComplexKey = (value: Entrie, key: Entrie, interfaceStr: string, actualIndex: number) => {
-    const { str, index: newIndex } = <any>interfaceToJson(interfaceStr, actualIndex, true)
+    const { str, index: newIndex } = interfaceToJson(interfaceStr, actualIndex, true)
 
     key.str = str
 
@@ -93,7 +93,7 @@ export const handleNewComplexKey = (value: Entrie, key: Entrie, interfaceStr: st
     }
 }
 
-export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0, isComplex: boolean = false) => {
+export const interfaceToJson = (interfaceStr: string, actualIndex: number = 0, isComplex: boolean = false): { str: string, index: number } => {
     let key = {
         indexBegin: actualIndex,
         str: ''
