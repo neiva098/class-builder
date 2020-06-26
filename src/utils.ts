@@ -139,11 +139,12 @@ export const interfaceToJson = (interfaceStr: string, actualIndex: number) => {
         }
     }
 
-    return JSON.parse(JSON.stringify(Object.fromEntries(entries)))
+    return Object.fromEntries(entries)
 }
 
 export const getMethods = (objectInterface: any, objectName: string, className: string) => {
     const methods = Object.entries(objectInterface).map((entrie: any) => {
+        entrie[1] = entrie[1].replace(new RegExp(/["]/, 'gm'), '')
 
         return `    public with${entrie[0][0].toUpperCase()}${entrie[0].slice(1)}(${entrie[0]}: ${[entrie[1]]}): ${className} {
         this._${objectName}.${entrie[0]} = ${entrie[0]}
